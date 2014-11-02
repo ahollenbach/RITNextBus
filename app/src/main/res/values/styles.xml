@@ -5,4 +5,67 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <color name="good_green">#77AA00</color>
+    <color name="bad_red">#CC0000</color>
+
+    <color name="text_lightest">#FFFFFF</color>
+    <color name="text_lights">#DDDDDD</color>
+    <color name="text_dark">#222222</color>
+    <color name="text_darkest">#111111</color>
+
+    <color name="bg_light">#DDDDDD</color>
+    <color name="bg_dark">#222222</color>
+
+    <style name="NextBusGood">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:background">@color/good_green</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="NextBusSoon" parent="NextBusGood">
+        <item name="android:background">@color/bad_red</item>
+    </style>
+
+    <style name="h">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/text_darkest</item>
+    </style>
+
+    <style name="h1" parent="h"></style>
+
+    <style name="h2" parent="h">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="h3" parent="h">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_lights</item>
+    </style>
+
+    <style name="aside" parent="h">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/text_lights</item>
+    </style>
+
+    <style name="table_elem">
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/text_dark</item>
+    </style>
+
+
 </resources>

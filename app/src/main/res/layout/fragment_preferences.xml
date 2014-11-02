@@ -1,0 +1,88 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity$NextBusFragment" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/bg_light">
+
+        <TextView
+            android:text="Settings"
+            style="@style/h1"
+            android:paddingTop="10dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Current Route:"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/curRouteLabel" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/curRoute"
+                android:layout_weight="1"
+                android:spinnerMode="dropdown" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/NextBusGood"
+            android:id="@+id/mainHomeBlock" >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    style="@style/h2"
+                    android:text="About"
+                    android:textColor="@color/text_lightest"/>
+
+                <TextView
+                    style="@style/h3"
+                    android:text="    This app is still under development. Please email hollenbach.andrew@gmail.com if you have any issues! \n\n    Arrival times are estimates based on the routes released by the RGRTA and are not guaranteed to be accurate."
+                    android:id="@+id/aboutDescription"
+                    android:textColor="@color/text_lights" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            style="@style/NextBusSoon"
+            android:id="@+id/mainDestBlock" >
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <TextView
+                    style="@style/h2"
+                    android:text="Andrew Hollenbach"
+                    android:textColor="@color/text_lightest"/>
+
+                <TextView
+                    style="@style/h3"
+                    android:text="www.andrewhollenbach.com"
+                    android:id="@+id/email"
+                    android:textColor="@color/text_lights" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

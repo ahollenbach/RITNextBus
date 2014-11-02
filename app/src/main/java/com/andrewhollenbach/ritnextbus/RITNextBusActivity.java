@@ -1,5 +1,9 @@
 package com.andrewhollenbach.ritnextbus;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
@@ -7,16 +11,19 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.provider.ContactsContract;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class RITNextBusActivity extends Activity implements ActionBar.TabListener {
@@ -44,6 +51,15 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        // Can't just actionBar.hide(), because that hides the tabs as well
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        // set up data
+        int resourceId = getResources().getIdentifier("com.andrewhollenbach.ritnextbus:raw/data.json",null,null);
+        JSONObject data = loadJsonFromFile(R.raw.data);
+        DataManager.setData(data);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -86,13 +102,7 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -123,9 +133,15 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch(position) {
+                case 0:
+                    return NextBusFragment.newInstance();
+                case 1:
+                    return ScheduleFragment.newInstance();
+                case 2:
+                    return PreferencesFragment.newInstance();
+            }
+            return null;
         }
 
         @Override
@@ -149,35 +165,122 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // JSON data stuff
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    public JSONObject loadJsonFromFile(int file) {
+        String jsonString = "";
+        try {
+            InputStream is = getResources().openRawResource(file);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            jsonString = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+
+        JSONObject json = null;
+        try {
+            json = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return json;
+    }
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Fragment Classes
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+
     /**
-     * A placeholder fragment containing a simple view.
+     * The main Next Bus view. Displays the next time at home and academic.
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public static class NextBusFragment extends Fragment {
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
+        public static NextBusFragment newInstance() {
+            return new NextBusFragment();
         }
 
-        public PlaceholderFragment() {
+        public NextBusFragment() {
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_ritnext_bus, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_nextbus, container, false);
+
+            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm");
+
+            Date residential = DataManager.getNextResidential();
+            TextView tTipHome = (TextView)rootView.findViewById(R.id.mainTimeTipHome);
+            tTipHome.setText("(" + timeFormat.format(residential) + ")");
+
+            Date academic    = DataManager.getNextAcademic();
+            TextView tTipAcad = (TextView)rootView.findViewById(R.id.mainTimeTipDest);
+            tTipAcad.setText("(" + timeFormat.format(academic) + ")");
+
+            return rootView;
+        }
+    }
+
+    /**
+     * Displays a table of route times
+     */
+    public static class ScheduleFragment extends Fragment {
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static ScheduleFragment newInstance() {
+            return new ScheduleFragment();
+        }
+
+        public ScheduleFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
+
+            return rootView;
+        }
+    }
+
+    /**
+     * The view which displays options to select route and learn about the app.
+     */
+    public static class PreferencesFragment extends Fragment {
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PreferencesFragment newInstance() {
+            return new PreferencesFragment();
+        }
+
+        public PreferencesFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_preferences, container, false);
+
             return rootView;
         }
     }

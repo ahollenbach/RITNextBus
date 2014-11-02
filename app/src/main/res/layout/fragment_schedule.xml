@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity$ScheduleFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#DDD">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:stretchColumns="0,1"
+            android:id="@+id/scheduleTable">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/bg_dark">
+
+                <LinearLayout
+                    style="@style/table_elem">
+
+                    <TextView
+                        style="@style/h2"
+                        android:text="At Home"
+                        android:textColor="@color/text_lightest"/>
+
+                    <TextView
+                        style="@style/h3"
+                        android:text="(RIT - The Province)"
+                        android:id="@+id/scheduleHomeTitle"
+                        android:textColor="@color/text_lights" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/table_elem">
+
+                    <TextView
+                        style="@style/h2"
+                        android:text="At Destination"
+                        android:textColor="@color/text_lightest"/>
+
+                    <TextView
+                        style="@style/h3"
+                        android:text="(RIT - Gleason Circle)"
+                        android:id="@+id/mainDestLocation"
+                        android:textColor="@color/text_lights" />
+                </LinearLayout>
+            </TableRow>
+            <TableRow
+                android:background="@color/bg_light">
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/ht1"
+                    android:text="3:00pm" />
+
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/dt1"
+                    android:text="3:10pm"/>
+            </TableRow>
+            <TableRow
+                android:background="@color/bg_light">
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/ht2"
+                    android:text="3:00pm" />
+
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/dt2"
+                    android:text="3:10pm"/>
+            </TableRow>
+            <TableRow
+                android:background="@color/bg_light">
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/ht3"
+                    android:text="3:00pm" />
+
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/dt3"
+                    android:text="3:10pm"/>
+            </TableRow>
+            <TableRow
+                android:background="@color/bg_light">
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/ht4"
+                    android:text="3:00pm" />
+
+                <TextView
+                    style="@style/table_elem"
+                    android:id="@+id/dt4"
+                    android:text="3:10pm"/>
+            </TableRow>
+        </TableLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>
