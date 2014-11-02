@@ -3,6 +3,7 @@ package com.andrewhollenbach.ritnextbus;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -204,6 +206,13 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
      * The main Next Bus view. Displays the next time at home and academic.
      */
     public static class NextBusFragment extends Fragment {
+        private static View rootView;
+
+        private static Date nextHome;
+        private static Date nextDest;
+
+        private static NextBusTimer homeTimer;
+        private static NextBusTimer destTimer;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -219,19 +228,40 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_nextbus, container, false);
-
-            SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm");
+            rootView = inflater.inflate(R.layout.fragment_nextbus, container, false);
 
             Date residential = DataManager.getNextResidential();
-            TextView tTipHome = (TextView)rootView.findViewById(R.id.mainTimeTipHome);
-            tTipHome.setText("(" + timeFormat.format(residential) + ")");
-
             Date academic    = DataManager.getNextAcademic();
-            TextView tTipAcad = (TextView)rootView.findViewById(R.id.mainTimeTipDest);
-            tTipAcad.setText("(" + timeFormat.format(academic) + ")");
+            NextBusFragment.startTimers(residential, academic);
 
             return rootView;
+        }
+
+        public static void startTimers(Date nextHomeTime, Date nextDestTime) {
+            TextView homeText = (TextView) rootView.findViewById(R.id.mainHomeLocation);
+            homeText.setText("(RIT - " + DataManager.curRouteName + ")");
+
+            nextHome = nextHomeTime;
+            nextDest = nextDestTime;
+            Date now = Calendar.getInstance().getTime();
+
+            TextView homeTimeView = (TextView) rootView.findViewById(R.id.mainTimeHome);
+            LinearLayout homeContainer = (LinearLayout) rootView.findViewById(R.id.mainHomeBlock);
+            TextView destTimeView = (TextView) rootView.findViewById(R.id.mainTimeDest);
+            LinearLayout destContainer = (LinearLayout) rootView.findViewById(R.id.mainDestBlock);
+
+            if(homeTimer != null && destTimer != null) {
+                homeTimer.cancel();
+                destTimer.cancel();
+            }
+
+            long timeRemaining = DataManager.compareTimes(nextHome,now);
+            homeTimer = new NextBusTimer(timeRemaining, 1000,nextHome, homeTimeView, homeContainer,"home");
+            homeTimer.start();
+
+            timeRemaining = DataManager.compareTimes(nextDest,now);
+            destTimer = new NextBusTimer(timeRemaining, 1000,nextDest, destTimeView, destContainer,"gleason");
+            destTimer.start();
         }
     }
 

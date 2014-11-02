@@ -20,6 +20,7 @@ public class DataManager {
     private static JSONObject data;
 
     public static String curRouteName = "The Province";
+    public static SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm");
 
     public static void setData(JSONObject d) {
         data = d;
@@ -67,6 +68,7 @@ public class DataManager {
     }
 
     public static Date getNext(String direction) throws JSONException, ParseException {
+        Log.d("RITNextBus","Getting next " + direction);
         Calendar calendar = Calendar.getInstance();
         int today = calendar.get(Calendar.DAY_OF_WEEK);
         ArrayList<String> stopTimes = getRoute(direction, today);
@@ -75,7 +77,6 @@ public class DataManager {
         SimpleDateFormat format = new SimpleDateFormat(getTimeFormat());
         for(int i=0;i<stopTimes.size();i++) {
             Date stopTime = format.parse(stopTimes.get(i));
-            Log.w("RITNextBus",curTime.toString() + " " + stopTime.toString());
             if(compareTimes(curTime,stopTime) < 0) {
                 return stopTime;
             }
@@ -84,7 +85,7 @@ public class DataManager {
     }
 
     // Author: http://stackoverflow.com/a/7676307/1227632
-    private static int compareTimes(Date d1, Date d2)
+    public static int compareTimes(Date d1, Date d2)
     {
         int     t1;
         int     t2;
