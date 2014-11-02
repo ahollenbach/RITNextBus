@@ -1,4 +1,4 @@
-package com.andrewhollenbach.ritnextbus;
+package com.andrewhollenbach.RITNextBus;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +63,6 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         actionBar.setDisplayShowTitleEnabled(false);
 
         // set up data
-        int resourceId = getResources().getIdentifier("com.andrewhollenbach.ritnextbus:raw/data.json",null,null);
         JSONObject data = loadJsonFromFile(R.raw.data);
         DataManager.setData(data);
 

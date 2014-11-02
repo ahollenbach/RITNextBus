@@ -1,14 +1,9 @@
-package com.andrewhollenbach.ritnextbus;
-
-import android.text.format.DateFormat;
-import android.text.format.Time;
-import android.util.Log;
+package com.andrewhollenbach.RITNextBus;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

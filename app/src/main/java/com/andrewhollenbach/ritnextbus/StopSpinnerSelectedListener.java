@@ -1,16 +1,11 @@
-package com.andrewhollenbach.ritnextbus;
+package com.andrewhollenbach.RITNextBus;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Spinner;
-import android.widget.TextView;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 

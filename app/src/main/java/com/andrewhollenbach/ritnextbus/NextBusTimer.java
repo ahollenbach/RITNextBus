@@ -1,4 +1,4 @@
-package com.andrewhollenbach.ritnextbus;
+package com.andrewhollenbach.RITNextBus;
 
 import android.graphics.Color;
 import android.os.CountDownTimer;

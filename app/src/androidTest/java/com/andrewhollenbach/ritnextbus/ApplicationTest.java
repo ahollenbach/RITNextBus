@@ -1,4 +1,4 @@
-package com.andrewhollenbach.ritnextbus;
+package com.andrewhollenbach.RITNextBus;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
