@@ -2,10 +2,10 @@ package com.andrewhollenbach.ritnextbus;
 
 import android.graphics.Color;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -51,23 +51,22 @@ public class NextBusTimer extends CountDownTimer {
 
         setTextTime();
 
-        // TODO: Update Schedule Fragment
-        //Route route = DataManager.getRoute(DataManager.curRoute);
-        //MainActivity.ScheduleFragment.updateTable(route);
+        ArrayList<Date> rTimes = DataManager.getNext4("residentialRoutes");
+        ArrayList<Date> aTimes = DataManager.getNext4("academicRoutes");
+        RITNextBusActivity.ScheduleFragment.updateTable(rTimes, aTimes);
 
         Date residential = DataManager.getNextResidential();
         Date academic    = DataManager.getNextAcademic();
-
         RITNextBusActivity.NextBusFragment.startTimers(residential, academic);
     }
 
     public void setTextTime() {
-        if(location.equals("home")) {
+        if(location.equals("residentialRoutes")) {
             TextView timeTip = (TextView) container.findViewById(R.id.mainTimeTipHome);
-            timeTip.setText("(" + DataManager.timeFormat.format(nextStop) + ")");
+            timeTip.setText("(" + DataManager.printTimeFormat.format(nextStop) + ")");
         } else {
             TextView timeTip = (TextView) container.findViewById(R.id.mainTimeTipDest);
-            timeTip.setText("(" + DataManager.timeFormat.format(nextStop) + ")");
+            timeTip.setText("(" + DataManager.printTimeFormat.format(nextStop) + ")");
         }
     }
 }

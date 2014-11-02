@@ -2,7 +2,7 @@ package com.andrewhollenbach.ritnextbus;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -12,7 +12,6 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.provider.ContactsContract;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -22,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -256,11 +256,11 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
             }
 
             long timeRemaining = DataManager.compareTimes(nextHome,now);
-            homeTimer = new NextBusTimer(timeRemaining, 1000,nextHome, homeTimeView, homeContainer,"home");
+            homeTimer = new NextBusTimer(timeRemaining, 1000,nextHome, homeTimeView, homeContainer,"residentialRoutes");
             homeTimer.start();
 
-            timeRemaining = DataManager.compareTimes(nextDest,now);
-            destTimer = new NextBusTimer(timeRemaining, 1000,nextDest, destTimeView, destContainer,"gleason");
+            timeRemaining = DataManager.compareTimes(nextDest, now);
+            destTimer = new NextBusTimer(timeRemaining, 1000,nextDest, destTimeView, destContainer,"academicRoutes");
             destTimer.start();
         }
     }
@@ -269,6 +269,7 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
      * Displays a table of route times
      */
     public static class ScheduleFragment extends Fragment {
+        private static View rootView;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -284,9 +285,41 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
+            rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
+
+            ArrayList<Date> rTimes = DataManager.getNext4("residentialRoutes");
+            ArrayList<Date> aTimes = DataManager.getNext4("academicRoutes");
+            updateTable(rTimes, aTimes);
 
             return rootView;
+        }
+
+        public static void updateTable(ArrayList<Date> stopsResidential,ArrayList<Date> stopsAcademic) {
+            TextView homeText = (TextView) rootView.findViewById(R.id.scheduleHomeTitle);
+            homeText.setText("(RIT - " + DataManager.curRouteName + ")");
+
+            TableLayout scheduleTable = (TableLayout)rootView.findViewById(R.id.scheduleTable);
+
+            int[] home = new int[] { R.id.ht1, R.id.ht2, R.id.ht3, R.id.ht4 };
+            int[] dest = new int[] { R.id.dt1, R.id.dt2, R.id.dt3, R.id.dt4 };
+
+            for(int i=0;i<4;i++) {
+                TextView t = (TextView)scheduleTable.findViewById(home[i]);
+                if(i >= stopsResidential.size()) {
+                    t.setText("");
+                } else {
+                    t.setText(DataManager.printTimeFormat.format(stopsResidential.get(i)));
+                }
+            }
+
+            for(int i=0;i<4;i++) {
+                TextView t = (TextView)scheduleTable.findViewById(dest[i]);
+                if(i >= stopsAcademic.size()) {
+                    t.setText("");
+                } else {
+                    t.setText(DataManager.printTimeFormat.format(stopsAcademic.get(i)));
+                }
+            }
         }
     }
 

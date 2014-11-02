@@ -20,7 +20,7 @@ public class DataManager {
     private static JSONObject data;
 
     public static String curRouteName = "The Province";
-    public static SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm");
+    public static SimpleDateFormat printTimeFormat = new SimpleDateFormat("h:mm");
 
     public static void setData(JSONObject d) {
         data = d;
@@ -29,8 +29,13 @@ public class DataManager {
     public static String getVersion() throws JSONException {
         return data.getString("version");
     }
-    public static String getTimeFormat() throws JSONException {
-        return data.getString("timeformat");
+    public static String getTimeFormat() {
+        try {
+            return data.getString("timeformat");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public static JSONObject getDayMapping() throws JSONException {
         return data.getJSONObject("days");
@@ -68,7 +73,6 @@ public class DataManager {
     }
 
     public static Date getNext(String direction) throws JSONException, ParseException {
-        Log.d("RITNextBus","Getting next " + direction);
         Calendar calendar = Calendar.getInstance();
         int today = calendar.get(Calendar.DAY_OF_WEEK);
         ArrayList<String> stopTimes = getRoute(direction, today);
@@ -82,6 +86,38 @@ public class DataManager {
             }
         }
         return format.parse("0001");
+    }
+
+    public static ArrayList<Date> getNextI(String direction, int iElems) throws JSONException, ParseException {
+        Calendar calendar = Calendar.getInstance();
+        int today = calendar.get(Calendar.DAY_OF_WEEK);
+        ArrayList<String> stopTimes = getRoute(direction, today);
+
+        Date curTime = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(getTimeFormat());
+        for (int i = 0; i < stopTimes.size(); i++) {
+            Date stopTime = format.parse(stopTimes.get(i));
+            if (compareTimes(curTime, stopTime) < 0) {
+                ArrayList<Date> stops = new ArrayList<Date>();
+                for(int st=0;st<iElems;st++) {
+                    if(i+st >= stopTimes.size()) return stops;
+
+                    stops.add(format.parse(stopTimes.get(i + st)));
+                }
+                return stops;
+            }
+        }
+        return null;
+    }
+
+    // Syntactic Sugar
+    public static ArrayList<Date> getNext4(String direction) {
+        try {
+            return getNextI(direction,4);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Author: http://stackoverflow.com/a/7676307/1227632
