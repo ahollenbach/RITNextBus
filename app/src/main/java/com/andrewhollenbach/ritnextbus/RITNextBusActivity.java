@@ -12,6 +12,8 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -20,7 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -62,6 +66,10 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         int resourceId = getResources().getIdentifier("com.andrewhollenbach.ritnextbus:raw/data.json",null,null);
         JSONObject data = loadJsonFromFile(R.raw.data);
         DataManager.setData(data);
+
+        // set the current name
+        SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+        DataManager.curRouteName = preferences.getString("route","The Province");
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -306,7 +314,7 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
             for(int i=0;i<4;i++) {
                 TextView t = (TextView)scheduleTable.findViewById(home[i]);
                 if(i >= stopsResidential.size()) {
-                    t.setText("");
+                    t.setText("-");
                 } else {
                     t.setText(DataManager.printTimeFormat.format(stopsResidential.get(i)));
                 }
@@ -315,7 +323,7 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
             for(int i=0;i<4;i++) {
                 TextView t = (TextView)scheduleTable.findViewById(dest[i]);
                 if(i >= stopsAcademic.size()) {
-                    t.setText("");
+                    t.setText("-");
                 } else {
                     t.setText(DataManager.printTimeFormat.format(stopsAcademic.get(i)));
                 }
@@ -343,6 +351,16 @@ public class RITNextBusActivity extends Activity implements ActionBar.TabListene
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_preferences, container, false);
+
+            Spinner spinner = (Spinner) rootView.findViewById(R.id.curRoute);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, DataManager.routeNames);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(new StopSpinnerSelectedListener(rootView,getActivity()));
+
+            SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+            int spinnerPosition = adapter.getPosition(preferences.getString("route","The Province"));
+            spinner.setSelection(spinnerPosition);
 
             return rootView;
         }

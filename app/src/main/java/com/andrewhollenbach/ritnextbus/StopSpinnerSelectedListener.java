@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class StopSpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
 
@@ -32,6 +34,18 @@ public class StopSpinnerSelectedListener implements AdapterView.OnItemSelectedLi
         editor.putString("route", parent.getItemAtPosition(pos).toString());
 
         editor.commit();
+
+        DataManager.curRouteName = parent.getItemAtPosition(pos).toString();
+
+        // update NextBus
+        Date residential = DataManager.getNextResidential();
+        Date academic    = DataManager.getNextAcademic();
+        RITNextBusActivity.NextBusFragment.startTimers(residential, academic);
+
+        // update schedule
+        ArrayList<Date> rTimes = DataManager.getNext4("residentialRoutes");
+        ArrayList<Date> aTimes = DataManager.getNext4("academicRoutes");
+        RITNextBusActivity.ScheduleFragment.updateTable(rTimes, aTimes);
     }
 
     @Override

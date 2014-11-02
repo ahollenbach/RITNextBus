@@ -20,10 +20,16 @@ public class DataManager {
     private static JSONObject data;
 
     public static String curRouteName = "The Province";
+    public static ArrayList<String> routeNames;
     public static SimpleDateFormat printTimeFormat = new SimpleDateFormat("h:mm");
 
     public static void setData(JSONObject d) {
         data = d;
+        try {
+            setRouteNames();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getVersion() throws JSONException {
@@ -44,9 +50,19 @@ public class DataManager {
         return data.getJSONArray("routes");
     }
 
+    private static void setRouteNames() throws JSONException {
+        ArrayList<String> names = new ArrayList<String>();
+        JSONArray routes = getRoutes();
+        for(int i=0;i<routes.length();i++) {
+            JSONObject route = routes.getJSONObject(i);
+            names.add(route.getString("title"));
+        }
+        routeNames = names;
+    }
+
     // TODO: is there a cleaner way to do this?
     public static ArrayList<String> getRoute(String direction, int today) throws JSONException {
-        JSONArray routes = data.getJSONArray("routes");
+        JSONArray routes = getRoutes();
         for(int i=0;i<routes.length();i++) {
             JSONObject route = routes.getJSONObject(i);
             if(route.getString("title").equals(curRouteName)) {
